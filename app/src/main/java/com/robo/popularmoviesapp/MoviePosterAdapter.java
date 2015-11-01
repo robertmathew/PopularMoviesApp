@@ -46,8 +46,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_poster, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -55,12 +54,15 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Movie mMovie = mDataset.get(position);
 
+        //Creating URL for image
         final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
         final String SIZE_PATH = "w342";
         String IMG_PATH = mMovie.getImg();
 
-        Context context = holder.mImageView.getContext();
-        Glide.with(context).load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH).into(holder.mImageView);
+        //Loading image using Glide
+        Glide.with(holder.mImageView.getContext())
+                .load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH)
+                .into(holder.mImageView);
 
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
