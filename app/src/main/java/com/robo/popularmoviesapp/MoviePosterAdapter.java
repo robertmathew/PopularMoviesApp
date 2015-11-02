@@ -56,12 +56,13 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
         //Creating URL for image
         final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-        final String SIZE_PATH = "w342";
+        final String SIZE_PATH = "w185";
         String IMG_PATH = mMovie.getImg();
 
         //Loading image using Glide
         Glide.with(holder.mImageView.getContext())
                 .load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH)
+                .placeholder(R.color.grid_placeholder_bg)
                 .into(holder.mImageView);
 
         holder.mImageView.setOnClickListener(new View.OnClickListener() {
