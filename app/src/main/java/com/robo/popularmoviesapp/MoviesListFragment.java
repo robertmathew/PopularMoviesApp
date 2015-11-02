@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -43,6 +44,7 @@ public class MoviesListFragment extends Fragment {
     String sortMovies;
     SharedPreferences settings;
     String sort;
+    ProgressBar mProgressBar;
 
     public MoviesListFragment() {
         // Required empty public constructor
@@ -83,6 +85,7 @@ public class MoviesListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies_list, container, false);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.movies_progress_bar);
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -268,6 +271,7 @@ public class MoviesListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
+            mProgressBar.setVisibility(View.GONE);
             if (result != null) {
                 resultStrs = result;
                 mAdapter.notifyDataSetChanged();
