@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.robo.popularmoviesapp.MoviesListFragment">
+    tools:context="com.robo.popularmoviesapp.PopularMoviesFragment">
 
     <ProgressBar
         android:id="@+id/movies_progress_bar"

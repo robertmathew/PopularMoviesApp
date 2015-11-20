@@ -3,6 +3,7 @@ package com.robo.popularmoviesapp;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,12 +24,11 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public final View mView;
+        //public final View mView;
         public final ImageView mImageView;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
             mImageView = (ImageView) view.findViewById(R.id.imageView);
         }
     }
@@ -38,13 +39,16 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         mDataset = myDataset;
     }
 
+    public void setMoviesData(ArrayList<Movie> moviesData){
+        mDataset = moviesData;
+    }
+
     // Create new views (invoked by the layout manager)
     @Override
     public MoviePosterAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                             int viewType) {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.movie_poster, parent, false);
+        View v = LayoutInflater.from(mContext).inflate(R.layout.movie_poster, parent, false);
         // set the view's size, margins, paddings and layout parameters
         return new ViewHolder(v);
     }
@@ -58,6 +62,8 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
         final String SIZE_PATH = "w185";
         String IMG_PATH = mMovie.getImg();
+
+        Log.d(LOG_TAG, "onBindViewHolder: " + POSTER_BASE_URL + SIZE_PATH + IMG_PATH);
 
         //Loading image using Glide
         Glide.with(holder.mImageView.getContext())
