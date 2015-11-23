@@ -1,11 +1,11 @@
 package com.robo.popularmoviesapp;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +25,7 @@ public class RatingMoviesFragment extends Fragment {
 
     private String sortOrder;
     private static final String RATING_LIST = "ratingList";
+    private Context mContext;
 
     ProgressBar mProgressBar;
     MoviePosterAdapter ratingAdapter;
@@ -38,13 +39,17 @@ public class RatingMoviesFragment extends Fragment {
         return fragment;
     }
 
+    public RatingMoviesFragment(){
+        // Required empty public constructor
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sortOrder = getArguments().getString("sort");
+        mContext = getActivity();
 
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG, "Has saved instance");
             mRatingList = savedInstanceState.getParcelableArrayList(RATING_LIST);
         } else {
             FetchRatingMovies rm = new FetchRatingMovies();
@@ -59,14 +64,13 @@ public class RatingMoviesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_rating_movies, container, false);
 
-        ratingAdapter = new MoviePosterAdapter(getActivity(), mRatingList);
+        ratingAdapter = new MoviePosterAdapter(mContext, mRatingList);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.movies_progress_bar);
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mRecyclerView.setAdapter(ratingAdapter);
+        RecyclerView ratRecyclerView = (RecyclerView) view.findViewById(R.id.rat_recycler_view);
+        RecyclerView.LayoutManager ratLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
+        ratRecyclerView.setLayoutManager(ratLayoutManager);
+        ratRecyclerView.setAdapter(ratingAdapter);
 
         return view;
     }
@@ -81,16 +85,17 @@ public class RatingMoviesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> movies) {
-            //super.onPostExecute(movies);
 
-            mRatingList = movies;
-            /*for(Movie m : movies){
-                Log.d(LOG_TAG, "onPostExecute: " + m.getTitle());
-            }*/
-
-            ratingAdapter.setMoviesData(mRatingList);
-            ratingAdapter.notifyDataSetChanged();
-            mProgressBar.setVisibility(View.GONE);
+            if (movies != null) {
+                mRatingList.clear();
+                for (Movie m : movies) {
+                    mRatingList.add(m);
+                    //Log.d(LOG_TAG, "Rating onPostExecute: " + m.getId() + m.getImg() + m.getTitle());
+                }
+                ratingAdapter.setMoviesData(mRatingList);
+                ratingAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
+            }
         }
     }
 

@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.ViewHolder> {
@@ -20,23 +19,24 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private final String LOG_TAG = MoviePosterAdapter.class.getSimpleName();
 
     Context mContext;
-    private List<Movie> mDataset;
+    private ArrayList<Movie> mDataset;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        //public final View mView;
-        public final ImageView mImageView;
+        public View mView;
+        public ImageView mImageView;
 
         public ViewHolder(View view) {
             super(view);
-            mImageView = (ImageView) view.findViewById(R.id.imageView);
+            this.mView = view;
+            this.mImageView = (ImageView) view.findViewById(R.id.imageView);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MoviePosterAdapter(Context context, List<Movie> myDataset) {
-        mContext = context;
-        mDataset = myDataset;
+    public MoviePosterAdapter(Context context, ArrayList<Movie> myDataset) {
+        this.mContext = context;
+        this.mDataset = myDataset;
     }
 
     public void setMoviesData(ArrayList<Movie> moviesData){
@@ -48,22 +48,23 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     public MoviePosterAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                             int viewType) {
         // create a new view
-        View v = LayoutInflater.from(mContext).inflate(R.layout.movie_poster, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_poster, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        return new ViewHolder(v);
+        ViewHolder vh = new ViewHolder(v);
+        return vh;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
         final Movie mMovie = mDataset.get(position);
+        Log.d(LOG_TAG, "onBindViewHolder: " + mMovie.getTitle());
 
         //Creating URL for image
         final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
         final String SIZE_PATH = "w185";
         String IMG_PATH = mMovie.getImg();
-
-        Log.d(LOG_TAG, "onBindViewHolder: " + POSTER_BASE_URL + SIZE_PATH + IMG_PATH);
 
         //Loading image using Glide
         Glide.with(holder.mImageView.getContext())
@@ -71,7 +72,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
                 .placeholder(R.color.grid_placeholder_bg)
                 .into(holder.mImageView);
 
-        holder.mImageView.setOnClickListener(new View.OnClickListener() {
+        holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(mContext, DetailActivity.class);

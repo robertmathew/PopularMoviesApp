@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by robo on 20/11/15.
@@ -27,12 +26,7 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
     ArrayList<Movie> resultStrs = new ArrayList<>();
 
     private ArrayList<Movie> getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
-        List<String> idList = new ArrayList<>();
-        List<String> imgList = new ArrayList<>();
-        List<String> titleList = new ArrayList<>();
-        idList.clear();
-        imgList.clear();
-        titleList.clear();
+
         resultStrs.clear();
 
         // These are the names of the JSON objects that need to be extracted.
@@ -45,13 +39,12 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
         JSONArray movieList = moviesJson.getJSONArray(TMDB_LIST);
         for (int i = 0; i < movieList.length(); i++) {
             JSONObject singleMovie = movieList.getJSONObject(i);
+
             String id = singleMovie.getString(TMDB_ID);
             String img = singleMovie.getString(TMDB_IMG);
             String title = singleMovie.getString(TMDB_TITLE);
-            idList.add(id);
-            imgList.add(img);
-            titleList.add(title);
-            Movie movieInfo = new Movie(idList.get(i), imgList.get(i), titleList.get(i));
+
+            Movie movieInfo = new Movie(id, img, title);
             resultStrs.add(movieInfo);
         }
         return resultStrs;
@@ -83,7 +76,7 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
                     .appendQueryParameter(API_PARAM, api)
                     .build();
 
-            Log.d(LOG_TAG, "doInBackground: " + builtUri.toString());
+            //Log.d(LOG_TAG, "doInBackground: " + builtUri.toString());
 
             URL url = new URL(builtUri.toString());
 
