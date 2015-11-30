@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
@@ -19,16 +18,14 @@ import java.util.ArrayList;
  */
 public class PopularMoviesFragment extends Fragment {
 
-    private final String LOG_TAG = PopularMoviesFragment.class.getSimpleName();
+    private final String TAG = PopularMoviesFragment.class.getSimpleName();
 
-    private static final String SORT_POPULAR = "popularity.desc";
-
-    private String sortOrder;
     private static final String POPULAR_LIST = "popularList";
+
     private Context mContext;
+    private String sortOrder;
 
 
-    ProgressBar mProgressBar;
     MoviePosterAdapter popularAdapter;
     ArrayList<Movie> mPopularList = new ArrayList<>();
 
@@ -54,7 +51,7 @@ public class PopularMoviesFragment extends Fragment {
             mPopularList = savedInstanceState.getParcelableArrayList(POPULAR_LIST);
         } else {
             FetchPopularMovies pm = new FetchPopularMovies();
-            pm.execute(SORT_POPULAR);
+            pm.execute(sortOrder);
         }
     }
 
@@ -72,7 +69,6 @@ public class PopularMoviesFragment extends Fragment {
 
         popularAdapter = new MoviePosterAdapter(mContext, mPopularList);
 
-        mProgressBar = (ProgressBar) pView.findViewById(R.id.movies_progress_bar);
         RecyclerView popRecyclerView = (RecyclerView) pView.findViewById(R.id.pop_recycler_view);
         RecyclerView.LayoutManager popLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         popRecyclerView.setLayoutManager(popLayoutManager);
@@ -91,11 +87,9 @@ public class PopularMoviesFragment extends Fragment {
                 mPopularList.clear();
                 for (Movie m : movies) {
                     mPopularList.add(m);
-                    //Log.d(LOG_TAG, "Popular onPostExecute: " + m.getId() + m.getImg() + m.getTitle());
                 }
                 popularAdapter.setMoviesData(mPopularList);
                 popularAdapter.notifyDataSetChanged();
-                mProgressBar.setVisibility(View.GONE);
             }
         }
     }

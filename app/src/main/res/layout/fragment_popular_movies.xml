@@ -6,14 +6,6 @@
     android:orientation="vertical"
     tools:context="com.robo.popularmoviesapp.PopularMoviesFragment">
 
-    <ProgressBar
-        android:id="@+id/movies_progress_bar"
-        style="@style/Base.Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_gravity="center_horizontal|center_vertical"/>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pop_recycler_view"
         android:layout_width="match_parent"

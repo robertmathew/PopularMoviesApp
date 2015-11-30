@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
@@ -19,15 +18,13 @@ import java.util.ArrayList;
  */
 public class RatingMoviesFragment extends Fragment {
 
-    private final String LOG_TAG = RatingMoviesFragment.class.getSimpleName();
+    private final String TAG = RatingMoviesFragment.class.getSimpleName();
 
-    private static final String SORT_RATING = "vote_average.desc";
+    private static final String RATING_LIST = "ratingList";
 
     private String sortOrder;
-    private static final String RATING_LIST = "ratingList";
     private Context mContext;
 
-    ProgressBar mProgressBar;
     MoviePosterAdapter ratingAdapter;
     ArrayList<Movie> mRatingList = new ArrayList<>();
 
@@ -53,7 +50,7 @@ public class RatingMoviesFragment extends Fragment {
             mRatingList = savedInstanceState.getParcelableArrayList(RATING_LIST);
         } else {
             FetchRatingMovies rm = new FetchRatingMovies();
-            rm.execute(SORT_RATING);
+            rm.execute(sortOrder);
         }
     }
 
@@ -66,7 +63,6 @@ public class RatingMoviesFragment extends Fragment {
 
         ratingAdapter = new MoviePosterAdapter(mContext, mRatingList);
 
-        mProgressBar = (ProgressBar) view.findViewById(R.id.movies_progress_bar);
         RecyclerView ratRecyclerView = (RecyclerView) view.findViewById(R.id.rat_recycler_view);
         RecyclerView.LayoutManager ratLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         ratRecyclerView.setLayoutManager(ratLayoutManager);
@@ -90,11 +86,9 @@ public class RatingMoviesFragment extends Fragment {
                 mRatingList.clear();
                 for (Movie m : movies) {
                     mRatingList.add(m);
-                    //Log.d(LOG_TAG, "Rating onPostExecute: " + m.getId() + m.getImg() + m.getTitle());
                 }
                 ratingAdapter.setMoviesData(mRatingList);
                 ratingAdapter.notifyDataSetChanged();
-                mProgressBar.setVisibility(View.GONE);
             }
         }
     }

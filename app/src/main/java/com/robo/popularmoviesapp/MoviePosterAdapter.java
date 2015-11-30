@@ -7,15 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.ViewHolder> {
 
-    private final String LOG_TAG = MoviePosterAdapter.class.getSimpleName();
+    private final String TAG = MoviePosterAdapter.class.getSimpleName();
 
     private Context mContext;
     private ArrayList<Movie> mDataset;
@@ -24,11 +25,13 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
         public View mView;
         public ImageView mImageView;
+        public TextView mTextView;
 
         public ViewHolder(View view) {
             super(view);
             this.mView = view;
             this.mImageView = (ImageView) view.findViewById(R.id.imageView);
+            this.mTextView = (TextView) view.findViewById(R.id.title);
         }
     }
 
@@ -65,11 +68,13 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         final String SIZE_PATH = "w185";
         String IMG_PATH = mMovie.getImg();
 
-        //Loading image using Glide
-        Glide.with(holder.mImageView.getContext())
+        //Loading image using Picasso
+        Picasso.with(mContext)
                 .load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH)
-                .placeholder(R.color.grid_placeholder_bg)
                 .into(holder.mImageView);
+
+        //Title
+        holder.mTextView.setText(mMovie.getTitle());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

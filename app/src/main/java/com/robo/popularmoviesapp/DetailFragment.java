@@ -13,7 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -178,7 +179,7 @@ public class DetailFragment extends Fragment {
                 final String SIZE_PATH = "w185";
                 String IMG_PATH = movieInfo.getImg();
                 Context context = imgPoster.getContext();
-                Glide.with(context).load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH).into(imgPoster);
+                Picasso.with(context).load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH).into(imgPoster);
 
                 tvRating.setText(movieInfo.getRating());
                 tvRelease.setText("Release: " + movieInfo.getReleaseDate());
