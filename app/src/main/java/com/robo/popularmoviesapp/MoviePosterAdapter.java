@@ -3,7 +3,6 @@ package com.robo.popularmoviesapp;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     private final String LOG_TAG = MoviePosterAdapter.class.getSimpleName();
 
-    Context mContext;
+    private Context mContext;
     private ArrayList<Movie> mDataset;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -59,7 +58,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         final Movie mMovie = mDataset.get(position);
-        Log.d(LOG_TAG, "onBindViewHolder: " + mMovie.getTitle());
+        //Log.d(LOG_TAG, "onBindViewHolder: " + mMovie.getTitle());
 
         //Creating URL for image
         final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
