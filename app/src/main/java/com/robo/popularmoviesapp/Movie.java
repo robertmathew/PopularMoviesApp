@@ -13,6 +13,7 @@ public class Movie implements Parcelable {
     String _releaseDate;
     String _rating;
     String _voteCount;
+    String _backdrop;
 
     public Movie() {
 
