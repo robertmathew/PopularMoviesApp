@@ -71,6 +71,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         //Loading image using Picasso
         Picasso.with(mContext)
                 .load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH)
+                .placeholder( R.drawable.progress_animation )
                 .into(holder.mImageView);
 
         //Title
