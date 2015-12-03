@@ -52,8 +52,8 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         // create a new view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_poster, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        ViewHolder viewHolder = new ViewHolder(v);
+        return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
