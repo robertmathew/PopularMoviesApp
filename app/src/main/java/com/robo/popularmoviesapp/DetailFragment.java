@@ -60,9 +60,6 @@ public class DetailFragment extends Fragment {
 
         imgBackdrop = (ImageView) view.findViewById(R.id.backdrop);
 
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
-        tvTitle.setText(title);
-
         imgPoster = (ImageView) view.findViewById(R.id.posterImage);
         tvRating = (TextView) view.findViewById(R.id.tvRating);
         tvRelease = (TextView) view.findViewById(R.id.tvRelease);
@@ -79,13 +76,15 @@ public class DetailFragment extends Fragment {
             if (movieInfo != null) {
                 //Loading poster
                 final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-                final String SIZE_PATH = "w185";
+                final String SIZE_PATH = "w342";
                 String IMG_PATH = movieInfo.getImg();
                 Context context = imgPoster.getContext();
                 Picasso.with(context).load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH).into(imgPoster);
 
-                tvRating.setText(movieInfo.getRating());
-                tvRelease.setText("Release: " + movieInfo.getReleaseDate());
+                String ratingValue = getResources()
+                        .getString(R.string.rating_value, (movieInfo.getRating()));
+                tvRating.setText(ratingValue);
+                tvRelease.setText(Utility.loadDate(movieInfo.getReleaseDate()));
                 tvPlot.setText(movieInfo.getPlot());
             }
         }
