@@ -61,6 +61,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/linearLayout"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@color/divider"/>
 
             <!-- Plot -->
@@ -86,7 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="start"
-                    android:paddingTop="8dp"/>
+                    android:paddingTop="16dp"/>
             </LinearLayout>
 
             <View
@@ -94,6 +97,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/linearPlot"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:background="@color/divider"/>
 
             <!-- Trailer -->
@@ -118,7 +123,7 @@
                     android:id="@+id/recycler_view_trailer"
                     android:layout_width="match_parent"
                     android:layout_height="144dp"
-                    android:paddingTop="8dp"/>
+                    android:paddingTop="16dp"/>
             </LinearLayout>
 
         </RelativeLayout>
