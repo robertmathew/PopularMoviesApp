@@ -14,17 +14,27 @@ public class Movie implements Parcelable {
     String _rating;
     String _voteCount;
     String _backdrop;
+    String _key;
+    String _site;
 
     public Movie() {
 
     }
 
+    /* Discover constructor */
     public Movie(String id, String img, String title) {
         this._id = id;
         this._img = img;
         this._title = title;
     }
 
+    /* Poster constructor */
+    public Movie(String key, String site) {
+        this._key = key;
+        this._site = site;
+    }
+
+    /* Basic Info constructor */
     public Movie(String plot, String poster, String releaseDate, String rating, String voteCount) {
         this._plot = plot;
         this._img = poster;
@@ -45,20 +55,28 @@ public class Movie implements Parcelable {
         return this._title;
     }
 
-    public String getPlot(){
+    public String getPlot() {
         return this._plot;
     }
 
-    public String getReleaseDate(){
+    public String getReleaseDate() {
         return this._releaseDate;
     }
 
-    public String getRating(){
+    public String getRating() {
         return this._rating;
     }
 
-    public String getVoteCount(){
+    public String getVoteCount() {
         return this._voteCount;
+    }
+
+    public String getKey() {
+        return this._key;
+    }
+
+    public String getSite() {
+        return this._site;
     }
 
     protected Movie(Parcel in) {
@@ -88,7 +106,6 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
-
 
 
 }

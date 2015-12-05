@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 
 public class DetailFragment extends Fragment {
 
@@ -23,6 +27,8 @@ public class DetailFragment extends Fragment {
     ImageView imgPoster;
     ImageView imgBackdrop;
     TextView tvRating, tvRelease, tvPlot;
+    private ArrayList<Movie> trailerList = new ArrayList<>();
+    MovieTrailerAdapter movieTrailerAdapter;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -41,6 +47,10 @@ public class DetailFragment extends Fragment {
         //AsyncTask to load the movie info
         MovieInfoTask task = new MovieInfoTask();
         task.execute(id);
+
+        //AsyncTask to load trailer
+        MovieTrailerTask tTask = new MovieTrailerTask();
+        tTask.execute(id);
     }
 
 
@@ -65,6 +75,14 @@ public class DetailFragment extends Fragment {
         tvRelease = (TextView) view.findViewById(R.id.tvRelease);
         tvPlot = (TextView) view.findViewById(R.id.tvPlot);
 
+        //Trailer
+        RecyclerView trailerRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_trailer);
+        trailerRecyclerView.setHasFixedSize(true);
+        movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), trailerList);
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        trailerRecyclerView.setLayoutManager(linearLayoutManager);
+        trailerRecyclerView.setAdapter(movieTrailerAdapter);
 
         return view;
     }
@@ -101,6 +119,20 @@ public class DetailFragment extends Fragment {
 
                 Context context = imgBackdrop.getContext();
                 Picasso.with(context).load(POSTER_BASE_URL + SIZE_PATH + img).into(imgBackdrop);
+            }
+        }
+    }
+
+    private class MovieTrailerTask extends FetchMovieVideoTask {
+
+        @Override
+        protected void onPostExecute(ArrayList<Movie> movies) {
+            if (movies != null) {
+                trailerList.clear();
+                for (Movie m : movies) {
+                    trailerList.add(m);
+                }
+                movieTrailerAdapter.notifyDataSetChanged();
             }
         }
     }

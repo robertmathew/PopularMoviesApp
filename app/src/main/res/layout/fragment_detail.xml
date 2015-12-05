@@ -113,9 +113,16 @@
                     android:paddingRight="16dp"
                     android:text="Trailer"
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_trailer"
+                    android:layout_width="match_parent"
+                    android:layout_height="144dp"
+                    android:paddingTop="8dp"/>
             </LinearLayout>
 
         </RelativeLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
