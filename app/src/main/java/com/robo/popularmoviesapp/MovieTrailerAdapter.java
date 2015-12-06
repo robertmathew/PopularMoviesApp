@@ -61,6 +61,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         if (mMovie.getSite().equals("YouTube")) {
             Picasso.with(mContext)
                     .load(BASE_URL + key + IMG)
+                    .priority(Picasso.Priority.LOW)
                     .into(holder.mImageView);
         }
 

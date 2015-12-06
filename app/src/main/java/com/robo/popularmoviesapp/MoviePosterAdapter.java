@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.ViewHolder> {
@@ -26,12 +29,14 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         public View mView;
         public ImageView mImageView;
         public TextView mTextView;
+        public MaterialProgressBar mProgressBar;
 
         public ViewHolder(View view) {
             super(view);
             this.mView = view;
             this.mImageView = (ImageView) view.findViewById(R.id.imageView);
             this.mTextView = (TextView) view.findViewById(R.id.title);
+            this.mProgressBar = (MaterialProgressBar) view.findViewById(R.id.materialProgress);
         }
     }
 
@@ -58,7 +63,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         final Movie mMovie = mDataset.get(position);
         //Log.d(LOG_TAG, "onBindViewHolder: " + mMovie.getTitle());
@@ -71,8 +76,18 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         //Loading image using Picasso
         Picasso.with(mContext)
                 .load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH)
-                .placeholder( R.drawable.progress_animation )
-                .into(holder.mImageView);
+                .error(R.drawable.no_poster)
+                .into(holder.mImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        holder.mProgressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
 
         //Title
         holder.mTextView.setText(mMovie.getTitle());

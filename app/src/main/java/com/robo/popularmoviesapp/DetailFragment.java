@@ -97,7 +97,8 @@ public class DetailFragment extends Fragment {
                 final String SIZE_PATH = "w342";
                 String IMG_PATH = movieInfo.getImg();
                 Context context = imgPoster.getContext();
-                Picasso.with(context).load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH).into(imgPoster);
+                Picasso.with(context).load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH)
+                        .priority(Picasso.Priority.HIGH).into(imgPoster);
 
                 String ratingValue = getResources()
                         .getString(R.string.rating_value, (movieInfo.getRating()));
