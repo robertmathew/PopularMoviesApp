@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="#55000000"
+        android:ellipsize="end"
         android:maxLines="1"
         android:paddingBottom="8dp"
         android:paddingLeft="8dp"

@@ -24,6 +24,7 @@ public class FetchMovieInfoTask extends AsyncTask<String, Void, Movie> {
     private Movie getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
+        final String TMDB_BACKDROP = "backdrop_path";
         final String TMDB_OVERVIEW = "overview";
         final String TMDB_POSTER = "poster_path";
         final String TMDB_RELEASE_DATE = "release_date";
@@ -32,13 +33,14 @@ public class FetchMovieInfoTask extends AsyncTask<String, Void, Movie> {
 
 
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
+        String backdrop = moviesJson.getString(TMDB_BACKDROP);
         String plot = moviesJson.getString(TMDB_OVERVIEW);
         String poster = moviesJson.getString(TMDB_POSTER);
         String releaseDate = moviesJson.getString(TMDB_RELEASE_DATE);
         String rating = moviesJson.getString(TMDB_VOTE_AVERAGE);
         String voteCount = moviesJson.getString(TMDB_VOTE_COUNT);
 
-        return new Movie(plot, poster, releaseDate, rating, voteCount);
+        return new Movie(backdrop, plot, poster, releaseDate, rating, voteCount);
     }
 
     protected Movie doInBackground(String... params) {

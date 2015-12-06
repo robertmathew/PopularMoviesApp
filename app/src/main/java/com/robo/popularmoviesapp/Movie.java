@@ -35,7 +35,8 @@ public class Movie implements Parcelable {
     }
 
     /* Basic Info constructor */
-    public Movie(String plot, String poster, String releaseDate, String rating, String voteCount) {
+    public Movie(String backdrop, String plot, String poster, String releaseDate, String rating, String voteCount) {
+        this._backdrop = backdrop;
         this._plot = plot;
         this._img = poster;
         this._releaseDate = releaseDate;
@@ -73,6 +74,10 @@ public class Movie implements Parcelable {
 
     public String getKey() {
         return this._key;
+    }
+
+    public String getBackdrop() {
+        return this._backdrop;
     }
 
     public String getSite() {

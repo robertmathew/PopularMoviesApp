@@ -2,7 +2,6 @@ package com.robo.popularmoviesapp;
 
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -39,10 +38,6 @@ public class DetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         id = getActivity().getIntent().getStringExtra("id");
         title = getActivity().getIntent().getStringExtra("title");
-
-        //AsyncTask to load the backdrop
-        MovieImgTask btask = new MovieImgTask();
-        btask.execute(id);
 
         //AsyncTask to load the movie info
         MovieInfoTask task = new MovieInfoTask();
@@ -94,11 +89,21 @@ public class DetailFragment extends Fragment {
             if (movieInfo != null) {
                 //Loading poster
                 final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-                final String SIZE_PATH = "w342";
-                String IMG_PATH = movieInfo.getImg();
-                Context context = imgPoster.getContext();
-                Picasso.with(context).load(POSTER_BASE_URL + SIZE_PATH + IMG_PATH)
+                final String POSTER_SIZE_PATH = "w342";
+                final String BACKDROP_SIZE_PATH = "w780";
+
+                //Poster
+                String POSTER_IMG_PATH = movieInfo.getImg();
+                Picasso.with(imgPoster.getContext())
+                        .load(POSTER_BASE_URL + POSTER_SIZE_PATH + POSTER_IMG_PATH)
                         .priority(Picasso.Priority.HIGH).into(imgPoster);
+
+
+                //Backdrop
+                String BACKDROP_IMG_PATH = movieInfo.getBackdrop();
+                Picasso.with(imgBackdrop.getContext())
+                        .load(POSTER_BASE_URL + BACKDROP_SIZE_PATH + BACKDROP_IMG_PATH)
+                        .into(imgBackdrop);
 
                 String ratingValue = getResources()
                         .getString(R.string.rating_value, (movieInfo.getRating()));
@@ -109,20 +114,7 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    private class MovieImgTask extends FetchMovieImgTask {
 
-        @Override
-        protected void onPostExecute(String img) {
-            if (img != null) {
-                //Loading poster
-                final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-                final String SIZE_PATH = "original";
-
-                Context context = imgBackdrop.getContext();
-                Picasso.with(context).load(POSTER_BASE_URL + SIZE_PATH + img).into(imgBackdrop);
-            }
-        }
-    }
 
     private class MovieTrailerTask extends FetchMovieVideoTask {
 
