@@ -1,4 +1,4 @@
-package com.robo.popularmoviesapp;
+package com.robo.popularmoviesapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.fragments.PopularMoviesFragment;
+import com.robo.popularmoviesapp.fragments.RatingMoviesFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@
 
 <fragment
     android:id="@+id/fragment_container"
-    android:name="com.robo.popularmoviesapp.DetailFragment"
+    android:name="com.robo.popularmoviesapp.fragments.DetailFragment"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>

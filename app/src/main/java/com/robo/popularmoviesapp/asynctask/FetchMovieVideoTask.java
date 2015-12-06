@@ -1,8 +1,11 @@
-package com.robo.popularmoviesapp;
+package com.robo.popularmoviesapp.asynctask;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.robo.popularmoviesapp.BuildConfig;
+import com.robo.popularmoviesapp.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

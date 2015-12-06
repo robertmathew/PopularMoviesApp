@@ -1,4 +1,4 @@
-package com.robo.popularmoviesapp;
+package com.robo.popularmoviesapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.robo.popularmoviesapp.activities.DetailActivity;
+import com.robo.popularmoviesapp.activities.MainActivity;
+import com.robo.popularmoviesapp.Movie;
+import com.robo.popularmoviesapp.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -23,22 +27,6 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     private Context mContext;
     private ArrayList<Movie> mDataset;
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        public View mView;
-        public ImageView mImageView;
-        public TextView mTextView;
-        public MaterialProgressBar mProgressBar;
-
-        public ViewHolder(View view) {
-            super(view);
-            this.mView = view;
-            this.mImageView = (ImageView) view.findViewById(R.id.imageView);
-            this.mTextView = (TextView) view.findViewById(R.id.title);
-            this.mProgressBar = (MaterialProgressBar) view.findViewById(R.id.materialProgress);
-        }
-    }
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MoviePosterAdapter(Context context, ArrayList<Movie> myDataset) {
@@ -111,5 +99,21 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+
+        public View mView;
+        public ImageView mImageView;
+        public TextView mTextView;
+        public MaterialProgressBar mProgressBar;
+
+        public ViewHolder(View view) {
+            super(view);
+            this.mView = view;
+            this.mImageView = (ImageView) view.findViewById(R.id.imageView);
+            this.mTextView = (TextView) view.findViewById(R.id.title);
+            this.mProgressBar = (MaterialProgressBar) view.findViewById(R.id.materialProgress);
+        }
     }
 }

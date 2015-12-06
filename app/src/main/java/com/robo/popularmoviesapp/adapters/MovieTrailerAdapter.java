@@ -1,4 +1,4 @@
-package com.robo.popularmoviesapp;
+package com.robo.popularmoviesapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.robo.popularmoviesapp.Movie;
+import com.robo.popularmoviesapp.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -22,15 +24,6 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
     private final Context mContext;
     private ArrayList<Movie> mDataset;
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView;
-
-        public ViewHolder(View v) {
-            super(v);
-            mImageView = (ImageView) v.findViewById(R.id.video_thumbnail_view);
-        }
-    }
 
     public MovieTrailerAdapter(Context context, ArrayList<Movie> myDataset) {
         mContext = context;
@@ -77,5 +70,14 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView mImageView;
+
+        public ViewHolder(View v) {
+            super(v);
+            mImageView = (ImageView) v.findViewById(R.id.video_thumbnail_view);
+        }
     }
 }

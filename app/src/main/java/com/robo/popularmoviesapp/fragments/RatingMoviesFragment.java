@@ -1,4 +1,4 @@
-package com.robo.popularmoviesapp;
+package com.robo.popularmoviesapp.fragments;
 
 
 import android.content.Context;
@@ -10,6 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.robo.popularmoviesapp.Movie;
+import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.adapters.MoviePosterAdapter;
+import com.robo.popularmoviesapp.asynctask.FetchMovieListTask;
+
 import java.util.ArrayList;
 
 
@@ -18,15 +23,16 @@ import java.util.ArrayList;
  */
 public class RatingMoviesFragment extends Fragment {
 
-    private final String TAG = RatingMoviesFragment.class.getSimpleName();
-
     private static final String RATING_LIST = "ratingList";
-
+    private final String TAG = RatingMoviesFragment.class.getSimpleName();
+    MoviePosterAdapter ratingAdapter;
+    ArrayList<Movie> mRatingList = new ArrayList<>();
     private String sortOrder;
     private Context mContext;
 
-    MoviePosterAdapter ratingAdapter;
-    ArrayList<Movie> mRatingList = new ArrayList<>();
+    public RatingMoviesFragment() {
+        // Required empty public constructor
+    }
 
     public static RatingMoviesFragment newInstance(String sort) {
         RatingMoviesFragment fragment = new RatingMoviesFragment();
@@ -34,10 +40,6 @@ public class RatingMoviesFragment extends Fragment {
         args.putString("sort", sort);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public RatingMoviesFragment(){
-        // Required empty public constructor
     }
 
     @Override

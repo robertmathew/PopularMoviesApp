@@ -1,4 +1,4 @@
-package com.robo.popularmoviesapp;
+package com.robo.popularmoviesapp.fragments;
 
 
 import android.app.Fragment;
@@ -14,6 +14,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.robo.popularmoviesapp.Movie;
+import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.Utility;
+import com.robo.popularmoviesapp.adapters.MovieTrailerAdapter;
+import com.robo.popularmoviesapp.asynctask.FetchMovieInfoTask;
+import com.robo.popularmoviesapp.asynctask.FetchMovieVideoTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -21,13 +27,13 @@ import java.util.ArrayList;
 
 public class DetailFragment extends Fragment {
 
-    String id, title;
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
+    String id, title;
     ImageView imgPoster;
     ImageView imgBackdrop;
     TextView tvRating, tvRelease, tvPlot;
-    private ArrayList<Movie> trailerList = new ArrayList<>();
     MovieTrailerAdapter movieTrailerAdapter;
+    private ArrayList<Movie> trailerList = new ArrayList<>();
 
     public DetailFragment() {
         // Required empty public constructor

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.robo.popularmoviesapp.PopularMoviesFragment">
+    tools:context=".fragments.PopularMoviesFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pop_recycler_view"
