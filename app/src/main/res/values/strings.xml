@@ -1,18 +1,20 @@
 <resources>
     <string name="app_name">Movie Hub</string>
 
-    <string name="hello_world">Hello world!</string>
+    <!--Action strings-->
     <string name="action_settings">Settings</string>
-    <string name="action_sort">Sort</string>
+    <string name="action_discover">Discover</string>
+    <string name="action_favorite">Favorites</string>
+
+    <string name="power_tmdb">Powered by TMDB</string>
     <string name="popular">Popular</string>
     <string name="rating">Rating</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_detail">DetailActivity</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <!--Detail screen-->
+    <string name="poster">Poster</string>
+    <string name="plot">Plot</string>
+    <string name="trailer">Trailer</string>
 
-    //Rating string
+    <!--Rating format string-->
     <string name="rating_value" translatable="false">%1$s/10</string>
 </resources>
