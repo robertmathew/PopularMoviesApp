@@ -5,11 +5,16 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,25 +40,25 @@ public class DetailFragment extends Fragment {
 
     //Poster and backdrop URL
     private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
+    private static final String MOVIE_SHARE_HASHTAG = " #PopularMoviesApp";
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
     private final String POSTER_SIZE_PATH = "w342";
     private final String BACKDROP_SIZE_PATH = "w780";
     ImageView imgPoster, imgBackdrop;
     TextView tvRating, tvRelease, tvPlot;
-
     TextView tvUsername, tvContent;
     Button btnMoreReview;
     LinearLayout reviewLayout;
     MovieTrailerAdapter movieTrailerAdapter;
     LinearLayout trailerLayout;
-
+    private ShareActionProvider mShareActionProvider;
     private String id, title;
     private String mBackdrop, mPoster, mRating, mReleaseDate, mPlot;
     private ArrayList<Movie> trailerList = new ArrayList<>();
     private ArrayList<Review> reviewList = new ArrayList<>();
 
     public DetailFragment() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -152,6 +157,30 @@ public class DetailFragment extends Fragment {
         outState.putParcelableArrayList(getString(R.string.key_trailer), trailerList);
         outState.putParcelableArrayList(getString(R.string.key_review), reviewList);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_detail_fragment, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        mShareActionProvider.setShareIntent(createShareForecastIntent());
+    }
+
+    private Intent createShareForecastIntent() {
+        String link = null;
+        if (trailerList.size() != 0) {
+            Movie m = trailerList.get(0);
+            link = "Trailer: http://www.youtube.com/watch?v=" + m.getKey();
+        }
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, title + link + MOVIE_SHARE_HASHTAG);
+        return shareIntent;
     }
 
     public void setMovieInfo(String backdrop, String posterPath, String rating,
