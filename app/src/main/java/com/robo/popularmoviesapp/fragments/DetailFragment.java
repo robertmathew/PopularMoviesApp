@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.robo.popularmoviesapp.Movie;
@@ -39,9 +40,13 @@ public class DetailFragment extends Fragment {
     private final String BACKDROP_SIZE_PATH = "w780";
     ImageView imgPoster, imgBackdrop;
     TextView tvRating, tvRelease, tvPlot;
+
     TextView tvUsername, tvContent;
     Button btnMoreReview;
+    LinearLayout reviewLayout;
     MovieTrailerAdapter movieTrailerAdapter;
+    LinearLayout trailerLayout;
+
     private String id, title;
     private String mBackdrop, mPoster, mRating, mReleaseDate, mPlot;
     private ArrayList<Movie> trailerList = new ArrayList<>();
@@ -104,6 +109,7 @@ public class DetailFragment extends Fragment {
         tvRelease = (TextView) view.findViewById(R.id.tvRelease);
         tvPlot = (TextView) view.findViewById(R.id.tvPlot);
 
+        reviewLayout = (LinearLayout) view.findViewById(R.id.linearUserReview);
         tvUsername = (TextView) view.findViewById(R.id.review_author_name_view);
         tvContent = (TextView) view.findViewById(R.id.review_content_view);
         btnMoreReview = (Button) view.findViewById(R.id.detail_reviews_show_more_button);
@@ -118,6 +124,7 @@ public class DetailFragment extends Fragment {
         });
 
         //Trailer
+        trailerLayout = (LinearLayout) view.findViewById(R.id.linearTrailer);
         RecyclerView trailerRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_trailer);
         trailerRecyclerView.setHasFixedSize(true);
         movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), trailerList);
@@ -172,9 +179,13 @@ public class DetailFragment extends Fragment {
     }
 
     public void setMovieReview(ArrayList<Review> reviews) {
-        Review r = reviews.get(0);
-        tvUsername.setText(r.getAuthor());
-        tvContent.setText(r.getContent());
+        if (reviews.size() != 0) {
+            Review r = reviews.get(0);
+            tvUsername.setText(r.getAuthor());
+            tvContent.setText(r.getContent());
+        } else {
+            reviewLayout.setVisibility(View.GONE);
+        }
     }
 
     private class MovieInfoTask extends FetchMovieInfoTask {
@@ -203,7 +214,11 @@ public class DetailFragment extends Fragment {
                 for (Movie m : movies) {
                     trailerList.add(m);
                 }
-                movieTrailerAdapter.notifyDataSetChanged();
+                if (trailerList.size() != 0) {
+                    movieTrailerAdapter.notifyDataSetChanged();
+                } else {
+                    trailerLayout.setVisibility(View.GONE);
+                }
             }
         }
     }
