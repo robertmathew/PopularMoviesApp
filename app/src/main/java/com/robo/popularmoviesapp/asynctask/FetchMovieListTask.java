@@ -24,8 +24,9 @@ import java.util.ArrayList;
  */
 public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
+    private static final String SORT_POPULAR = "popularity.desc";
+    private static final String SORT_RATING = "vote_average.desc";
     private final String LOG_TAG = FetchMovieListTask.class.getSimpleName();
-
     ArrayList<Movie> resultStrs = new ArrayList<>();
 
     private ArrayList<Movie> getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
@@ -73,12 +74,26 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
                     "http://api.themoviedb.org/3/discover/movie?";
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
+            final String VOTE_MIN = "vote_count.gte";
+            final String VOTE_MIN_VALUE = "1000";
+            String sort = params[0];
 
-            Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
-                    .appendQueryParameter(SORT_PARAM, params[0])
-                    .appendQueryParameter(API_PARAM, api)
-                    .build();
-
+            Uri builtUri = null;
+            switch (sort) {
+                case SORT_POPULAR:
+                    builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                            .appendQueryParameter(SORT_PARAM, params[0])
+                            .appendQueryParameter(API_PARAM, api)
+                            .build();
+                    break;
+                case SORT_RATING:
+                    builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                            .appendQueryParameter(SORT_PARAM, params[0])
+                            .appendQueryParameter(API_PARAM, api)
+                            .appendQueryParameter(VOTE_MIN, VOTE_MIN_VALUE)
+                            .build();
+                    break;
+            }
             //Log.d(LOG_TAG, "doInBackground: " + builtUri.toString());
 
             URL url = new URL(builtUri.toString());
