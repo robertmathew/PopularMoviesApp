@@ -1,7 +1,6 @@
 package com.robo.popularmoviesapp.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -27,10 +26,9 @@ public class DetailActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(this);
-            onBackPressed();
+            finish();
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
 

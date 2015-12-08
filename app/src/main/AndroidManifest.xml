@@ -27,7 +27,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity"/>
         </activity>
-
+        <activity
+            android:name=".activities.ReviewActivity"
+            android:label="@string/title_activity_review">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.DetailActivity"/>
+        </activity>
     </application>
 
 </manifest>

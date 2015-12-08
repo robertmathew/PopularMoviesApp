@@ -2,6 +2,7 @@ package com.robo.popularmoviesapp.fragments;
 
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,14 +12,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.robo.popularmoviesapp.Movie;
 import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.Review;
 import com.robo.popularmoviesapp.Utility;
+import com.robo.popularmoviesapp.activities.ReviewActivity;
 import com.robo.popularmoviesapp.adapters.MovieTrailerAdapter;
 import com.robo.popularmoviesapp.asynctask.FetchMovieInfoTask;
+import com.robo.popularmoviesapp.asynctask.FetchMovieReviewTask;
 import com.robo.popularmoviesapp.asynctask.FetchMovieVideoTask;
 import com.squareup.picasso.Picasso;
 
@@ -27,13 +32,20 @@ import java.util.ArrayList;
 
 public class DetailFragment extends Fragment {
 
+    //Poster and backdrop URL
+    private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private final String LOG_TAG = DetailFragment.class.getSimpleName();
-    String id, title;
-    ImageView imgPoster;
-    ImageView imgBackdrop;
+    private final String POSTER_SIZE_PATH = "w342";
+    private final String BACKDROP_SIZE_PATH = "w780";
+    ImageView imgPoster, imgBackdrop;
     TextView tvRating, tvRelease, tvPlot;
+    TextView tvUsername, tvContent;
+    Button btnMoreReview;
     MovieTrailerAdapter movieTrailerAdapter;
+    private String id, title;
+    private String mBackdrop, mPoster, mRating, mReleaseDate, mPlot;
     private ArrayList<Movie> trailerList = new ArrayList<>();
+    private ArrayList<Review> reviewList = new ArrayList<>();
 
     public DetailFragment() {
         // Required empty public constructor
@@ -45,13 +57,29 @@ public class DetailFragment extends Fragment {
         id = getActivity().getIntent().getStringExtra("id");
         title = getActivity().getIntent().getStringExtra("title");
 
-        //AsyncTask to load the movie info
-        MovieInfoTask task = new MovieInfoTask();
-        task.execute(id);
+        if (savedInstanceState != null) {
+            id = savedInstanceState.getString(getString(R.string.key_id));
+            title = savedInstanceState.getString(getString(R.string.key_title));
+            mBackdrop = savedInstanceState.getString(getString(R.string.key_backdrop));
+            mPoster = savedInstanceState.getString(getString(R.string.key_poster));
+            mRating = savedInstanceState.getString(getString(R.string.key_rating));
+            mReleaseDate = savedInstanceState.getString(getString(R.string.key_release_date));
+            mPlot = savedInstanceState.getString(getString(R.string.key_plot));
+            trailerList = savedInstanceState.getParcelableArrayList(getString(R.string.key_trailer));
+            reviewList = savedInstanceState.getParcelableArrayList(getString(R.string.key_review));
+        } else {
+            //AsyncTask to load the movie info
+            MovieInfoTask task = new MovieInfoTask();
+            task.execute(id);
 
-        //AsyncTask to load trailer
-        MovieTrailerTask tTask = new MovieTrailerTask();
-        tTask.execute(id);
+            //AsyncTask to load trailer
+            MovieTrailerTask tTask = new MovieTrailerTask();
+            tTask.execute(id);
+
+            //Asynctask to load review
+            MovieReviewTask reviewTask = new MovieReviewTask();
+            reviewTask.execute(id);
+        }
     }
 
 
@@ -76,6 +104,19 @@ public class DetailFragment extends Fragment {
         tvRelease = (TextView) view.findViewById(R.id.tvRelease);
         tvPlot = (TextView) view.findViewById(R.id.tvPlot);
 
+        tvUsername = (TextView) view.findViewById(R.id.review_author_name_view);
+        tvContent = (TextView) view.findViewById(R.id.review_content_view);
+        btnMoreReview = (Button) view.findViewById(R.id.detail_reviews_show_more_button);
+
+        btnMoreReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ReviewActivity.class);
+                intent.putParcelableArrayListExtra("reviews", reviewList);
+                startActivity(intent);
+            }
+        });
+
         //Trailer
         RecyclerView trailerRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_trailer);
         trailerRecyclerView.setHasFixedSize(true);
@@ -85,7 +126,55 @@ public class DetailFragment extends Fragment {
         trailerRecyclerView.setLayoutManager(linearLayoutManager);
         trailerRecyclerView.setAdapter(movieTrailerAdapter);
 
+        if (savedInstanceState != null) {
+            setMovieInfo(mBackdrop, mPoster, mRating, mReleaseDate, mPlot);
+            setMovieReview(reviewList);
+        }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(getString(R.string.key_id), id);
+        outState.putString(getString(R.string.key_title), title);
+        outState.putString(getString(R.string.key_backdrop), mBackdrop);
+        outState.putString(getString(R.string.key_poster), mPoster);
+        outState.putString(getString(R.string.key_rating), mRating);
+        outState.putString(getString(R.string.key_release_date), mReleaseDate);
+        outState.putString(getString(R.string.key_plot), mPlot);
+        outState.putParcelableArrayList(getString(R.string.key_trailer), trailerList);
+        outState.putParcelableArrayList(getString(R.string.key_review), reviewList);
+        super.onSaveInstanceState(outState);
+    }
+
+    public void setMovieInfo(String backdrop, String posterPath, String rating,
+                             String releaseDate, String plot) {
+        //Backdrop
+        Picasso.with(imgBackdrop.getContext())
+                .load(POSTER_BASE_URL + BACKDROP_SIZE_PATH + backdrop)
+                .into(imgBackdrop);
+
+        //Poster
+        Picasso.with(imgPoster.getContext())
+                .load(POSTER_BASE_URL + POSTER_SIZE_PATH + posterPath)
+                .priority(Picasso.Priority.HIGH).into(imgPoster);
+
+        //Rating
+        String ratingValue = getResources()
+                .getString(R.string.rating_value, rating);
+        tvRating.setText(ratingValue);
+
+        //Release date
+        tvRelease.setText(Utility.loadDate(releaseDate));
+
+        //Plot
+        tvPlot.setText(plot);
+    }
+
+    public void setMovieReview(ArrayList<Review> reviews) {
+        Review r = reviews.get(0);
+        tvUsername.setText(r.getAuthor());
+        tvContent.setText(r.getContent());
     }
 
     private class MovieInfoTask extends FetchMovieInfoTask {
@@ -93,33 +182,16 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Movie movieInfo) {
             if (movieInfo != null) {
-                //Loading poster
-                final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-                final String POSTER_SIZE_PATH = "w342";
-                final String BACKDROP_SIZE_PATH = "w780";
+                mBackdrop = movieInfo.getBackdrop();
+                mPoster = movieInfo.getImg();
+                mRating = movieInfo.getRating();
+                mReleaseDate = movieInfo.getReleaseDate();
+                mPlot = movieInfo.getPlot();
 
-                //Poster
-                String POSTER_IMG_PATH = movieInfo.getImg();
-                Picasso.with(imgPoster.getContext())
-                        .load(POSTER_BASE_URL + POSTER_SIZE_PATH + POSTER_IMG_PATH)
-                        .priority(Picasso.Priority.HIGH).into(imgPoster);
-
-
-                //Backdrop
-                String BACKDROP_IMG_PATH = movieInfo.getBackdrop();
-                Picasso.with(imgBackdrop.getContext())
-                        .load(POSTER_BASE_URL + BACKDROP_SIZE_PATH + BACKDROP_IMG_PATH)
-                        .into(imgBackdrop);
-
-                String ratingValue = getResources()
-                        .getString(R.string.rating_value, (movieInfo.getRating()));
-                tvRating.setText(ratingValue);
-                tvRelease.setText(Utility.loadDate(movieInfo.getReleaseDate()));
-                tvPlot.setText(movieInfo.getPlot());
+                setMovieInfo(mBackdrop, mPoster, mRating, mReleaseDate, mPlot);
             }
         }
     }
-
 
 
     private class MovieTrailerTask extends FetchMovieVideoTask {
@@ -132,6 +204,20 @@ public class DetailFragment extends Fragment {
                     trailerList.add(m);
                 }
                 movieTrailerAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    private class MovieReviewTask extends FetchMovieReviewTask {
+
+        @Override
+        protected void onPostExecute(ArrayList<Review> reviews) {
+            if (reviews != null) {
+                reviewList.clear();
+                for (Review review : reviews) {
+                    reviewList.add(review);
+                }
+                setMovieReview(reviewList);
             }
         }
     }
