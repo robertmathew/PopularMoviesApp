@@ -18,6 +18,7 @@
     <string name="trailer">Trailer</string>
     <string name="user_review">User review</string>
     <string name="details_reviews_show_more_label">Show more reviews</string>
+    <string name="sharing_no_video">No trailer to share</string>
 
     <!--Rating format string-->
     <string name="rating_value" translatable="false">%1$s/10</string>

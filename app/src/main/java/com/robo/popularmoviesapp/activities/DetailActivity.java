@@ -27,8 +27,9 @@ public class DetailActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == android.R.id.home) {
             finish();
+            return true;
         }
-        return true;
+        return false;
     }
 
 

@@ -5,7 +5,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.view.MenuItemCompat;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,9 +43,11 @@ public class DetailFragment extends Fragment {
     //Poster and backdrop URL
     private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String MOVIE_SHARE_HASHTAG = " #PopularMoviesApp";
-    private final String LOG_TAG = DetailFragment.class.getSimpleName();
+    private static final String TAG = "DetailFragment";
     private final String POSTER_SIZE_PATH = "w342";
     private final String BACKDROP_SIZE_PATH = "w780";
+
+    CoordinatorLayout coordinatorLayout;
     ImageView imgPoster, imgBackdrop;
     TextView tvRating, tvRelease, tvPlot;
     TextView tvUsername, tvContent;
@@ -58,12 +62,14 @@ public class DetailFragment extends Fragment {
     private ArrayList<Review> reviewList = new ArrayList<>();
 
     public DetailFragment() {
-        setHasOptionsMenu(true);
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         id = getActivity().getIntent().getStringExtra("id");
         title = getActivity().getIntent().getStringExtra("title");
 
@@ -103,6 +109,7 @@ public class DetailFragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(title);
@@ -162,25 +169,38 @@ public class DetailFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_detail_fragment, menu);
-
-        MenuItem menuItem = menu.findItem(R.id.action_share);
-
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-        mShareActionProvider.setShareIntent(createShareForecastIntent());
     }
 
-    private Intent createShareForecastIntent() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                Intent intent = createShareMovieIntent();
+                if (intent != null)
+                    startActivity(intent);
+                else {
+                    Snackbar.make(coordinatorLayout, getString(R.string.sharing_no_video),
+                            Snackbar.LENGTH_SHORT).show();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private Intent createShareMovieIntent() {
         String link = null;
         if (trailerList.size() != 0) {
             Movie m = trailerList.get(0);
-            link = "Trailer: http://www.youtube.com/watch?v=" + m.getKey();
-        }
-
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, title + link + MOVIE_SHARE_HASHTAG);
-        return shareIntent;
+            link = "  Trailer: http://www.youtube.com/watch?v=" + m.getKey();
+            Intent intent = ShareCompat.IntentBuilder
+                    .from(getActivity())
+                    .setText(title + link + MOVIE_SHARE_HASHTAG)
+                    .setType("text/plain")
+                    .createChooserIntent();
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            return intent;
+        } else
+            return null;
     }
 
     public void setMovieInfo(String backdrop, String posterPath, String rating,
