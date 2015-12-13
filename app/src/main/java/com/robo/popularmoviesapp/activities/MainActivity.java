@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.fragments.DetailFragment;
 import com.robo.popularmoviesapp.fragments.PopularMoviesFragment;
 import com.robo.popularmoviesapp.fragments.RatingMoviesFragment;
 
@@ -27,14 +28,20 @@ public class MainActivity extends AppCompatActivity {
     private static final String SORT_POPULAR = "popularity.desc";
     private static final String SORT_RATING = "vote_average.desc";
 
+    private Boolean mTwoPane;
     private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+        }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
 
@@ -80,13 +87,22 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
-    public void switchToDetail(Intent intent) {
-        startActivity(intent);
+    public void switchToDetail(String id, String title) {
+        if (mTwoPane) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, DetailFragment.newInstance(id, title, mTwoPane))
+                    .commit();
+        } else {
+            Intent i = new Intent(this, DetailActivity.class);
+            i.putExtra("id", id);
+            i.putExtra("title", title);
+            startActivity(i);
+        }
     }
 
     /**

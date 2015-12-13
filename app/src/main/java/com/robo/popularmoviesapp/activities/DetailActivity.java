@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.fragments.DetailFragment;
 
 public class DetailActivity extends AppCompatActivity {
 
     private String id, title;
+    private Boolean twoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +20,11 @@ public class DetailActivity extends AppCompatActivity {
         //Getting id and title
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
+        twoPane = false;
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, DetailFragment.newInstance(id, title, twoPane))
+                .commit();
     }
 
     @Override

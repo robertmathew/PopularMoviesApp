@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/posterImage"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="240dp"
         android:layout_weight="1"
         android:adjustViewBounds="true"
         android:contentDescription="@string/poster"
@@ -20,7 +20,7 @@
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="240dp"
         android:layout_weight="1"
         android:paddingLeft="8dp">
 

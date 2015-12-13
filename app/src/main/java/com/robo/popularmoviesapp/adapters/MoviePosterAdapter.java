@@ -1,7 +1,6 @@
 package com.robo.popularmoviesapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.robo.popularmoviesapp.activities.DetailActivity;
-import com.robo.popularmoviesapp.activities.MainActivity;
 import com.robo.popularmoviesapp.Movie;
 import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.activities.MainActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -83,13 +81,9 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(mContext, DetailActivity.class);
-                i.putExtra("id", mMovie.getId());
-                i.putExtra("title", mMovie.getTitle());
-
                 if (mContext instanceof MainActivity) {
                     MainActivity main= (MainActivity) mContext;
-                    main.switchToDetail(i);
+                    main.switchToDetail(mMovie.getId(), mMovie.getTitle());
                 }
             }
         });

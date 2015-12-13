@@ -11,7 +11,6 @@ import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,11 +54,25 @@ public class DetailFragment extends Fragment {
     LinearLayout reviewLayout;
     MovieTrailerAdapter movieTrailerAdapter;
     LinearLayout trailerLayout;
-    private ShareActionProvider mShareActionProvider;
+
+    private Boolean mTwoPane = false;
     private String id, title;
     private String mBackdrop, mPoster, mRating, mReleaseDate, mPlot;
     private ArrayList<Movie> trailerList = new ArrayList<>();
     private ArrayList<Review> reviewList = new ArrayList<>();
+
+    public static DetailFragment newInstance(String id, String title, Boolean twoPane) {
+        DetailFragment f = new DetailFragment();
+
+        // Supply index input as an argument.
+        Bundle args = new Bundle();
+        args.putString("id", id);
+        args.putString("title", title);
+        args.putBoolean("twoPane", twoPane);
+        f.setArguments(args);
+
+        return f;
+    }
 
     public DetailFragment() {
 
@@ -70,8 +83,12 @@ public class DetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        id = getActivity().getIntent().getStringExtra("id");
-        title = getActivity().getIntent().getStringExtra("title");
+        if (!getArguments().isEmpty()) {
+            id = getArguments().getString("id");
+            title = getArguments().getString("title");
+            mTwoPane = getArguments().getBoolean("twoPane");
+
+        }
 
         if (savedInstanceState != null) {
             id = savedInstanceState.getString(getString(R.string.key_id));
@@ -105,9 +122,11 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.detail_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (!mTwoPane) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
         CollapsingToolbarLayout collapsingToolbar =
@@ -183,8 +202,9 @@ public class DetailFragment extends Fragment {
                             Snackbar.LENGTH_SHORT).show();
                 }
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private Intent createShareMovieIntent() {
