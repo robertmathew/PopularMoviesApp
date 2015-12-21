@@ -18,7 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by robo on 30/11/15.
+ * Created by Robert Mathew on 30/11/15.
  */
 public class FetchMovieInfoTask extends AsyncTask<String, Void, Movie> {
 

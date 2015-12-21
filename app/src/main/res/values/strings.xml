@@ -34,4 +34,5 @@
     <string name="key_trailer" translatable="false">trailer</string>
     <string name="key_review" translatable="false">review</string>
 
+    <string name="authority" translatable="false">com.robo.popularmoviesapp</string>
 </resources>

@@ -2,16 +2,19 @@ package com.robo.popularmoviesapp.fragments;
 
 
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +35,7 @@ import com.robo.popularmoviesapp.adapters.MovieTrailerAdapter;
 import com.robo.popularmoviesapp.asynctask.FetchMovieInfoTask;
 import com.robo.popularmoviesapp.asynctask.FetchMovieReviewTask;
 import com.robo.popularmoviesapp.asynctask.FetchMovieVideoTask;
+import com.robo.popularmoviesapp.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -168,6 +172,24 @@ public class DetailFragment extends Fragment {
             setMovieInfo(mBackdrop, mPoster, mRating, mReleaseDate, mPlot);
             setMovieReview(reviewList);
         }
+
+        //Favorite
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab_favorite);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(MovieContract.MovieEntry._ID, Integer.valueOf(id));
+                contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+                contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mPoster);
+                contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, mBackdrop);
+                contentValues.put(MovieContract.MovieEntry.COLUMN_AVERAGE_RATE, mRating);
+                contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mReleaseDate);
+                contentValues.put(MovieContract.MovieEntry.COLUMN_PLOT, mPlot);
+                Log.d(TAG, "onClick: " + MovieContract.MovieEntry.CONTENT_URI);
+                getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+            }
+        });
         return view;
     }
 
