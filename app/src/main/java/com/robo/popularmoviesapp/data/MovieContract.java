@@ -66,7 +66,9 @@ public class MovieContract {
         public static final String COLUMN_KEY = "key";
         public static final String COLUMN_SITE = "site";
 
-
+        public static Uri buildTrailerUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 
     /* Inner class that defines the table contents of the review table */
@@ -85,5 +87,9 @@ public class MovieContract {
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_AUTHOR = "author";
         public static final String COLUMN_CONTENT = "content";
+
+        public static Uri buildReviewUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 }

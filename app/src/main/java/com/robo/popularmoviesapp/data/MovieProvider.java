@@ -75,7 +75,7 @@ public class MovieProvider extends ContentProvider {
                         MovieContract.MovieEntry.TABLE_NAME,
                         projection,
                         MovieContract.MovieEntry._ID + " = ?",
-                        new String[] {String.valueOf(ContentUris.parseId(uri))},
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
                         null,
                         null,
                         sortOrder);
@@ -92,14 +92,14 @@ public class MovieProvider extends ContentProvider {
     public String getType(Uri uri) {
         final int match = sUriMatcher.match(uri);
 
-        switch (match){
-            case MOVIE:{
+        switch (match) {
+            case MOVIE: {
                 return MovieContract.MovieEntry.CONTENT_TYPE;
             }
-            case MOVIE_WITH_ID:{
+            case MOVIE_WITH_ID: {
                 return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
             }
-            default:{
+            default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
         }
@@ -112,13 +112,30 @@ public class MovieProvider extends ContentProvider {
         Uri returnUri;
 
         switch (sUriMatcher.match(uri)) {
-            case MOVIE:
+            case MOVIE: {
                 long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
+                if (_id > 0)
                     returnUri = MovieContract.MovieEntry.buildMovieUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
+            }
+            case TRAILER: {
+                long _id = db.insert(MovieContract.TrailerEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = MovieContract.TrailerEntry.buildTrailerUri(_id);
+                } else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case REVIEW: {
+                long _id = db.insert(MovieContract.ReviewEntry.TABLE_NAME, null, values);
+                if (_id > 0) {
+                    returnUri = MovieContract.ReviewEntry.buildReviewUri(_id);
+                } else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

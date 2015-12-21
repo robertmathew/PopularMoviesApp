@@ -129,7 +129,8 @@ public class DetailFragment extends Fragment {
         final Toolbar toolbar = (Toolbar) view.findViewById(R.id.detail_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         if (!mTwoPane) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setDisplayHomeAsUpEnabled(true);
         }
 
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.main_content);
@@ -160,7 +161,8 @@ public class DetailFragment extends Fragment {
 
         //Trailer
         trailerLayout = (LinearLayout) view.findViewById(R.id.linearTrailer);
-        RecyclerView trailerRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_trailer);
+        RecyclerView trailerRecyclerView = (RecyclerView)
+                view.findViewById(R.id.recycler_view_trailer);
         trailerRecyclerView.setHasFixedSize(true);
         movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), trailerList);
         LinearLayoutManager linearLayoutManager =
@@ -174,20 +176,52 @@ public class DetailFragment extends Fragment {
         }
 
         //Favorite
-        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab_favorite);
+        FloatingActionButton floatingActionButton = (FloatingActionButton)
+                view.findViewById(R.id.fab_favorite);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(MovieContract.MovieEntry._ID, Integer.valueOf(id));
-                contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
-                contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mPoster);
-                contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, mBackdrop);
-                contentValues.put(MovieContract.MovieEntry.COLUMN_AVERAGE_RATE, mRating);
-                contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mReleaseDate);
-                contentValues.put(MovieContract.MovieEntry.COLUMN_PLOT, mPlot);
+                // TODO: 21/12/15 Check whether movie is already added
+                //Movie Info
+                ContentValues movieInfoValues = new ContentValues();
+                movieInfoValues.put(MovieContract.MovieEntry._ID, Integer.valueOf(id));
+                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mPoster);
+                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, mBackdrop);
+                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_AVERAGE_RATE, mRating);
+                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mReleaseDate);
+                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_PLOT, mPlot);
                 Log.d(TAG, "onClick: " + MovieContract.MovieEntry.CONTENT_URI);
-                getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+                getActivity().getContentResolver()
+                        .insert(MovieContract.MovieEntry.CONTENT_URI, movieInfoValues);
+                Log.d(TAG, "Content Provider added movie info to database");
+
+                //Trailer
+                ContentValues movieTrailerValues = new ContentValues();
+                Movie movie;
+                for (int i = 0; i < trailerList.size(); i++) {
+                    movie = trailerList.get(i);
+                    movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
+                    movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_KEY, movie.getKey());
+                    movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_SITE, movie.getSite());
+                    getActivity().getContentResolver()
+                            .insert(MovieContract.TrailerEntry.CONTENT_URI, movieTrailerValues);
+                }
+                Log.d(TAG, "Content Provider added movie trailer to database");
+
+                //Review
+                ContentValues movieReviewValues = new ContentValues();
+                Review review;
+                for (int i = 0; i < reviewList.size(); i++) {
+                    review = reviewList.get(i);
+                    movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
+                    movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_AUTHOR, review.getAuthor());
+                    movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_CONTENT, review.getContent());
+                    getActivity().getContentResolver()
+                            .insert(MovieContract.ReviewEntry.CONTENT_URI, movieReviewValues);
+                }
+                Log.d(TAG, "Content Provider added movie review to database");
+                Snackbar.make(v, "Marked as favorite", Snackbar.LENGTH_LONG).show();
             }
         });
         return view;

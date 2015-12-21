@@ -28,7 +28,7 @@ public class Movie implements Parcelable {
         this._title = title;
     }
 
-    /* Poster constructor */
+    /* Trailer constructor */
     public Movie(String key, String site) {
         this._key = key;
         this._site = site;
