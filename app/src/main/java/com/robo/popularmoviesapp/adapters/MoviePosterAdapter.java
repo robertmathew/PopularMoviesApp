@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.robo.popularmoviesapp.Movie;
 import com.robo.popularmoviesapp.R;
+import com.robo.popularmoviesapp.activities.FavoriteActivity;
 import com.robo.popularmoviesapp.activities.MainActivity;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -32,7 +33,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         this.mDataset = myDataset;
     }
 
-    public void setMoviesData(ArrayList<Movie> moviesData){
+    public void setMoviesData(ArrayList<Movie> moviesData) {
         mDataset = moviesData;
     }
 
@@ -82,8 +83,12 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
             @Override
             public void onClick(View v) {
                 if (mContext instanceof MainActivity) {
-                    MainActivity main= (MainActivity) mContext;
+                    MainActivity main = (MainActivity) mContext;
                     main.switchToDetail(mMovie.getId(), mMovie.getTitle());
+                }
+                if (mContext instanceof FavoriteActivity) {
+                    FavoriteActivity favorite = (FavoriteActivity) mContext;
+                    favorite.switchToDetail(mMovie.getId(), mMovie.getTitle());
                 }
             }
         });

@@ -81,6 +81,27 @@ public class MovieProvider extends ContentProvider {
                         sortOrder);
                 return cursor;
 
+            case TRAILER:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.TrailerEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                return cursor;
+
+            case REVIEW:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        MovieContract.ReviewEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                return cursor;
             default:
                 // By default, we assume a bad URI
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -98,6 +119,12 @@ public class MovieProvider extends ContentProvider {
             }
             case MOVIE_WITH_ID: {
                 return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
+            }
+            case TRAILER: {
+                return MovieContract.TrailerEntry.CONTENT_TYPE;
+            }
+            case REVIEW: {
+                return MovieContract.ReviewEntry.COLUMN_CONTENT;
             }
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -145,7 +172,33 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase database = mOpenHelper.getWritableDatabase();
+        int rowsDeleted;
+
+        switch (sUriMatcher.match(uri)) {
+            case MOVIE:
+                rowsDeleted = database.delete(
+                        MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case REVIEW: {
+                rowsDeleted = database.delete(
+                        MovieContract.ReviewEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            case TRAILER: {
+                rowsDeleted = database.delete(
+                        MovieContract.TrailerEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Undefined URI code: " + uri);
+        }
+
+        // Null deletes all rows
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     @Override

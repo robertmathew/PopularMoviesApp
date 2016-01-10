@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.robo.popularmoviesapp.R;
 import com.robo.popularmoviesapp.fragments.DetailFragment;
+import com.robo.popularmoviesapp.fragments.FavoriteDetailFragment;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -18,13 +19,20 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         //Getting id and title
+        String classname = getIntent().getStringExtra("class");
         id = getIntent().getStringExtra("id");
         title = getIntent().getStringExtra("title");
         twoPane = false;
 
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, DetailFragment.newInstance(id, title, twoPane))
-                .commit();
+        if(classname.equals("MainActivity")) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, DetailFragment.newInstance(id, title, twoPane))
+                    .commit();
+        } else {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, FavoriteDetailFragment.newInstance(id, title, twoPane))
+                    .commit();
+        }
     }
 
     @Override

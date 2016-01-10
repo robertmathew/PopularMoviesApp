@@ -25,6 +25,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+
     private static final String SORT_POPULAR = "popularity.desc";
     private static final String SORT_RATING = "vote_average.desc";
 
@@ -74,11 +76,26 @@ public class MainActivity extends AppCompatActivity {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
-                        return true;
+                        onNavItemClick(menuItem.getItemId());
+                        //menuItem.setChecked(true);
+                        return false;
                     }
                 });
+    }
+
+    // Handling Navigation view clicks
+    private void onNavItemClick(int itemId) {
+        Intent intent = null;
+        switch (itemId) {
+            case R.id.nav_favorite:
+                intent = new Intent(this, FavoriteActivity.class);
+                break;
+        }
+
+        if(intent != null){
+            startActivity(intent);
+        }
+        mDrawerLayout.closeDrawers();
     }
 
     @Override
@@ -99,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         } else {
             Intent i = new Intent(this, DetailActivity.class);
+            i.putExtra("class", "MainActivity");
             i.putExtra("id", id);
             i.putExtra("title", title);
             startActivity(i);

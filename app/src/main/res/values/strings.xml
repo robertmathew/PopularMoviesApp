@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Movie Hub</string>
     <string name="title_activity_review">Reviews</string>
+    <string name="title_activty_favorite">Favorite</string>
 
     <!--Action strings-->
     <string name="action_settings">Settings</string>

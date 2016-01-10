@@ -21,7 +21,7 @@ public class Movie implements Parcelable {
 
     }
 
-    /* Discover constructor */
+    /* Discover & Favorite constructor */
     public Movie(String id, String img, String title) {
         this._id = id;
         this._img = img;
