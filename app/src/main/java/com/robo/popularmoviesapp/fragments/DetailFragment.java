@@ -4,6 +4,7 @@ package com.robo.popularmoviesapp.fragments;
 import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -176,11 +177,20 @@ public class DetailFragment extends Fragment {
         }
 
         //Favorite
-        FloatingActionButton floatingActionButton = (FloatingActionButton)
+        final FloatingActionButton floatingActionButton = (FloatingActionButton)
                 view.findViewById(R.id.fab_favorite);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Changing the favorite button
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    floatingActionButton.setImageDrawable(
+                            getResources().getDrawable(R.drawable.ic_heart_white_24dp,
+                                    getActivity().getApplicationContext().getTheme()));
+                } else {
+                    floatingActionButton.setImageDrawable(
+                            getResources().getDrawable(R.drawable.ic_heart_white_24dp));
+                }
                 // TODO: 21/12/15 Check whether movie is already added
                 //Movie Info
                 ContentValues movieInfoValues = new ContentValues();

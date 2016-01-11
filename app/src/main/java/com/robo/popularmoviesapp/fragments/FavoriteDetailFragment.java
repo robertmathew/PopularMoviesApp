@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -178,12 +179,28 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
         }
 
         //Favorite
-        FloatingActionButton floatingActionButton = (FloatingActionButton)
+        final FloatingActionButton floatingActionButton = (FloatingActionButton)
                 view.findViewById(R.id.fab_favorite);
+        //Setting the favorite button
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            floatingActionButton.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_heart_white_24dp,
+                            getActivity().getApplicationContext().getTheme()));
+        } else {
+            floatingActionButton.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_heart_white_24dp));
+        }
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    floatingActionButton.setImageDrawable(
+                            getResources().getDrawable(R.drawable.ic_heart_outline_white_24dp,
+                                    getActivity().getApplicationContext().getTheme()));
+                } else {
+                    floatingActionButton.setImageDrawable(
+                            getResources().getDrawable(R.drawable.ic_heart_outline_white_24dp));
+                }
                 //Removing from favorites
                 ContentResolver cr = getActivity().getContentResolver();
                 int movieRow = cr.delete(MovieContract.MovieEntry.CONTENT_URI,
