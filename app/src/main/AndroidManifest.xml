@@ -34,13 +34,15 @@
         </activity>
         <activity
             android:name=".activities.ReviewActivity"
-            android:label="@string/title_activity_review">
+            android:label="@string/title_activity_review"
+            android:theme="@style/AppTheme.Normal">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.DetailActivity"/>
         </activity>
         <activity android:name=".activities.FavoriteActivity"
-            android:label="@string/title_activty_favorite">
+            android:label="@string/action_favorite"
+            android:theme="@style/AppTheme.Normal">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity"/>
