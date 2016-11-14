@@ -59,8 +59,8 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
     private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String MOVIE_SHARE_HASHTAG = " #PopularMoviesApp";
     private static final String TAG = "FavoriteDetailFragment";
-    private final String POSTER_SIZE_PATH = "w342";
-    private final String BACKDROP_SIZE_PATH = "w780";
+    private final String POSTER_SIZE_PATH = "w500";
+    private final String BACKDROP_SIZE_PATH = "w1280";
 
     private FloatingActionButton floatingActionButton;
     CoordinatorLayout coordinatorLayout;

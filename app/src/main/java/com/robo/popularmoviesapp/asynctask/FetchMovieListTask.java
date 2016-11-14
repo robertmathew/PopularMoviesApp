@@ -75,7 +75,7 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
             final String SORT_PARAM = "sort_by";
             final String API_PARAM = "api_key";
             final String VOTE_MIN = "vote_count.gte";
-            final String VOTE_MIN_VALUE = "1000";
+            final String VOTE_MIN_VALUE = "100";
             String sort = params[0];
 
             Uri builtUri = null;

@@ -57,7 +57,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
         //Creating URL for image
         final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
-        final String SIZE_PATH = "w185";
+        final String SIZE_PATH = "w342";
         String IMG_PATH = mMovie.getImg();
 
         //Loading image using Picasso
