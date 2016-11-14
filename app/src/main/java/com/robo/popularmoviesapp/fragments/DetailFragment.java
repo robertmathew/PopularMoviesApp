@@ -2,8 +2,14 @@ package com.robo.popularmoviesapp.fragments;
 
 
 import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -42,7 +48,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 
-public class DetailFragment extends Fragment {
+public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int MOVIE_LOADER_ID = 0;
+    // FLAG=0 movie not favorite
+    private int FLAG_FAVORITE = 0;
 
     //Poster and backdrop URL
     private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
@@ -59,6 +69,8 @@ public class DetailFragment extends Fragment {
     LinearLayout reviewLayout;
     MovieTrailerAdapter movieTrailerAdapter;
     LinearLayout trailerLayout;
+
+    private FloatingActionButton floatingActionButton;
 
     private Boolean mTwoPane = false;
     private String id, title;
@@ -120,6 +132,11 @@ public class DetailFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -177,64 +194,95 @@ public class DetailFragment extends Fragment {
         }
 
         //Favorite
-        final FloatingActionButton floatingActionButton = (FloatingActionButton)
-                view.findViewById(R.id.fab_favorite);
+        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab_favorite);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Changing the favorite button
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    floatingActionButton.setImageDrawable(
-                            getResources().getDrawable(R.drawable.ic_heart_white_24dp,
-                                    getActivity().getApplicationContext().getTheme()));
+                if (FLAG_FAVORITE == 0) {
+                    // Marking movie as favorite
+                    saveFavoriteMovie();
+                    Snackbar.make(v, "Marked as favorite", Snackbar.LENGTH_LONG).show();
+                    changeFABicon(R.drawable.ic_heart_white_24dp);
                 } else {
-                    floatingActionButton.setImageDrawable(
-                            getResources().getDrawable(R.drawable.ic_heart_white_24dp));
+                    // Already marked as favorite movie, so removing from favorites
+                    deleteFavoriteMovie();
+                    Snackbar.make(v, "Removed from favorites", Snackbar.LENGTH_LONG).show();
+                    changeFABicon(R.drawable.ic_heart_outline_white_24dp);
                 }
-                // TODO: 21/12/15 Check whether movie is already added
-                //Movie Info
-                ContentValues movieInfoValues = new ContentValues();
-                movieInfoValues.put(MovieContract.MovieEntry._ID, Integer.valueOf(id));
-                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
-                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mPoster);
-                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, mBackdrop);
-                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_AVERAGE_RATE, mRating);
-                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mReleaseDate);
-                movieInfoValues.put(MovieContract.MovieEntry.COLUMN_PLOT, mPlot);
-                Log.d(TAG, "onClick: " + MovieContract.MovieEntry.CONTENT_URI);
-                getActivity().getContentResolver()
-                        .insert(MovieContract.MovieEntry.CONTENT_URI, movieInfoValues);
-                Log.d(TAG, "Content Provider added movie info to database");
-
-                //Trailer
-                ContentValues movieTrailerValues = new ContentValues();
-                Movie movie;
-                for (int i = 0; i < trailerList.size(); i++) {
-                    movie = trailerList.get(i);
-                    movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
-                    movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_KEY, movie.getKey());
-                    movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_SITE, movie.getSite());
-                    getActivity().getContentResolver()
-                            .insert(MovieContract.TrailerEntry.CONTENT_URI, movieTrailerValues);
-                }
-                Log.d(TAG, "Content Provider added movie trailer to database");
-
-                //Review
-                ContentValues movieReviewValues = new ContentValues();
-                Review review;
-                for (int i = 0; i < reviewList.size(); i++) {
-                    review = reviewList.get(i);
-                    movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
-                    movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_AUTHOR, review.getAuthor());
-                    movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_CONTENT, review.getContent());
-                    getActivity().getContentResolver()
-                            .insert(MovieContract.ReviewEntry.CONTENT_URI, movieReviewValues);
-                }
-                Log.d(TAG, "Content Provider added movie review to database");
-                Snackbar.make(v, "Marked as favorite", Snackbar.LENGTH_LONG).show();
             }
         });
         return view;
+    }
+
+    //Changing the favorite button
+    private void changeFABicon(int drawableId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            floatingActionButton.setImageDrawable(
+                    getResources().getDrawable(drawableId,
+                            getActivity().getApplicationContext().getTheme()));
+        } else {
+            floatingActionButton.setImageDrawable(
+                    getResources().getDrawable(drawableId));
+        }
+    }
+
+    private void deleteFavoriteMovie() {
+        //Removing from favorites
+        ContentResolver cr = getActivity().getContentResolver();
+        int movieRow = cr.delete(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry._ID + "=?", new String[]{id});
+        Log.d(TAG, "Number of movies deleted: " + movieRow);
+        int trailerRow = cr.delete(MovieContract.TrailerEntry.CONTENT_URI,
+                MovieContract.TrailerEntry.COLUMN_MOVIE_ID + "=?", new String[]{id});
+        Log.d(TAG, "Number of trailer deleted: " + trailerRow);
+        int reviewRow = cr.delete(MovieContract.ReviewEntry.CONTENT_URI,
+                MovieContract.ReviewEntry.COLUMN_MOVIE_ID + "=?", new String[]{id});
+        Log.d(TAG, "Number of review deleted: " + reviewRow);
+        FLAG_FAVORITE = 0;
+    }
+
+    // Saves movie detail to database as favorites
+    private void saveFavoriteMovie() {
+        //Movie Info
+        ContentValues movieInfoValues = new ContentValues();
+        movieInfoValues.put(MovieContract.MovieEntry._ID, Integer.valueOf(id));
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mPoster);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, mBackdrop);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_AVERAGE_RATE, mRating);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mReleaseDate);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_PLOT, mPlot);
+        Log.d(TAG, "onClick: " + MovieContract.MovieEntry.CONTENT_URI);
+        getActivity().getContentResolver()
+                .insert(MovieContract.MovieEntry.CONTENT_URI, movieInfoValues);
+        Log.d(TAG, "Content Provider added movie info to database");
+
+        //Trailer
+        ContentValues movieTrailerValues = new ContentValues();
+        Movie movie;
+        for (int i = 0; i < trailerList.size(); i++) {
+            movie = trailerList.get(i);
+            movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
+            movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_KEY, movie.getKey());
+            movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_SITE, movie.getSite());
+            getActivity().getContentResolver()
+                    .insert(MovieContract.TrailerEntry.CONTENT_URI, movieTrailerValues);
+        }
+        Log.d(TAG, "Content Provider added movie trailer to database");
+
+        //Review
+        ContentValues movieReviewValues = new ContentValues();
+        Review review;
+        for (int i = 0; i < reviewList.size(); i++) {
+            review = reviewList.get(i);
+            movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
+            movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_AUTHOR, review.getAuthor());
+            movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_CONTENT, review.getContent());
+            getActivity().getContentResolver()
+                    .insert(MovieContract.ReviewEntry.CONTENT_URI, movieReviewValues);
+        }
+        Log.d(TAG, "Content Provider added movie review to database");
+        FLAG_FAVORITE = 1;
     }
 
     @Override
@@ -323,6 +371,36 @@ public class DetailFragment extends Fragment {
         }
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new CursorLoader(getActivity(),
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                MovieContract.MovieEntry._ID + " = ?",
+                new String[]{id},
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (loader.getId() == MOVIE_LOADER_ID) {
+            if (cursor.getCount() == 0) {
+                Log.d(TAG, "No data in database");
+                FLAG_FAVORITE = 0;
+            } else {
+                FLAG_FAVORITE = 1;
+                //Changing the favorite button
+                changeFABicon(R.drawable.ic_heart_white_24dp);
+                //Log.v(TAG, DatabaseUtils.dumpCursorToString(cursor));
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
     private class MovieInfoTask extends FetchMovieInfoTask {
 
         @Override
@@ -333,7 +411,6 @@ public class DetailFragment extends Fragment {
                 mRating = movieInfo.getRating();
                 mReleaseDate = movieInfo.getReleaseDate();
                 mPlot = movieInfo.getPlot();
-
                 setMovieInfo(mBackdrop, mPoster, mRating, mReleaseDate, mPlot);
             }
         }

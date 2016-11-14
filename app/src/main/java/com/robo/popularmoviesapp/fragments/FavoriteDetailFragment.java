@@ -3,6 +3,7 @@ package com.robo.popularmoviesapp.fragments;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -51,6 +52,9 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
     private static final int TRAILER_LOADER_ID = 1;
     private static final int REVIEW_LOADER_ID = 2;
 
+    // FLAG=0 movie not favorite
+    private int FLAG_FAVORITE = 1;
+
     //Poster and backdrop URL
     private final static String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String MOVIE_SHARE_HASHTAG = " #PopularMoviesApp";
@@ -58,6 +62,7 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
     private final String POSTER_SIZE_PATH = "w342";
     private final String BACKDROP_SIZE_PATH = "w780";
 
+    private FloatingActionButton floatingActionButton;
     CoordinatorLayout coordinatorLayout;
     ImageView imgPoster, imgBackdrop;
     TextView tvRating, tvRelease, tvPlot;
@@ -179,43 +184,97 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
         }
 
         //Favorite
-        final FloatingActionButton floatingActionButton = (FloatingActionButton)
-                view.findViewById(R.id.fab_favorite);
+        floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab_favorite);
         //Setting the favorite button
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            floatingActionButton.setImageDrawable(
-                    getResources().getDrawable(R.drawable.ic_heart_white_24dp,
-                            getActivity().getApplicationContext().getTheme()));
-        } else {
-            floatingActionButton.setImageDrawable(
-                    getResources().getDrawable(R.drawable.ic_heart_white_24dp));
-        }
+        changeFABicon(R.drawable.ic_heart_white_24dp);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    floatingActionButton.setImageDrawable(
-                            getResources().getDrawable(R.drawable.ic_heart_outline_white_24dp,
-                                    getActivity().getApplicationContext().getTheme()));
+                if (FLAG_FAVORITE == 0) {
+                    // Marking movie as favorite
+                    saveFavoriteMovie();
+                    Snackbar.make(v, "Marked as favorite", Snackbar.LENGTH_LONG).show();
+                    changeFABicon(R.drawable.ic_heart_white_24dp);
                 } else {
-                    floatingActionButton.setImageDrawable(
-                            getResources().getDrawable(R.drawable.ic_heart_outline_white_24dp));
+                    // Already marked as favorite movie, so removing from favorites
+                    deleteFavoriteMovie();
+                    Snackbar.make(v, "Removed from favorites", Snackbar.LENGTH_LONG).show();
+                    changeFABicon(R.drawable.ic_heart_outline_white_24dp);
                 }
-                //Removing from favorites
-                ContentResolver cr = getActivity().getContentResolver();
-                int movieRow = cr.delete(MovieContract.MovieEntry.CONTENT_URI,
-                        MovieContract.MovieEntry._ID + "=?", new String[]{id});
-                Log.d(TAG, "Number of movies deleted: " + movieRow);
-                int trailerRow = cr.delete(MovieContract.TrailerEntry.CONTENT_URI,
-                        MovieContract.TrailerEntry.COLUMN_MOVIE_ID + "=?", new String[]{id});
-                Log.d(TAG, "Number of trailer deleted: " + trailerRow);
-                int reviewRow = cr.delete(MovieContract.ReviewEntry.CONTENT_URI,
-                        MovieContract.ReviewEntry.COLUMN_MOVIE_ID + "=?", new String[]{id});
-                Log.d(TAG, "Number of review deleted: " + reviewRow);
-                Snackbar.make(v, "Removed from favorites", Snackbar.LENGTH_LONG).show();
             }
         });
         return view;
+    }
+
+    //Changing the favorite button
+    private void changeFABicon(int drawableId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            floatingActionButton.setImageDrawable(
+                    getResources().getDrawable(drawableId,
+                            getActivity().getApplicationContext().getTheme()));
+        } else {
+            floatingActionButton.setImageDrawable(
+                    getResources().getDrawable(drawableId));
+        }
+    }
+
+    private void deleteFavoriteMovie() {
+        //Removing from favorites
+        ContentResolver cr = getActivity().getContentResolver();
+        int movieRow = cr.delete(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry._ID + "=?", new String[]{id});
+        Log.d(TAG, "Number of movies deleted: " + movieRow);
+        int trailerRow = cr.delete(MovieContract.TrailerEntry.CONTENT_URI,
+                MovieContract.TrailerEntry.COLUMN_MOVIE_ID + "=?", new String[]{id});
+        Log.d(TAG, "Number of trailer deleted: " + trailerRow);
+        int reviewRow = cr.delete(MovieContract.ReviewEntry.CONTENT_URI,
+                MovieContract.ReviewEntry.COLUMN_MOVIE_ID + "=?", new String[]{id});
+        Log.d(TAG, "Number of review deleted: " + reviewRow);
+        FLAG_FAVORITE = 0;
+    }
+
+    // Saves movie detail to database as favorites
+    private void saveFavoriteMovie() {
+        //Movie Info
+        ContentValues movieInfoValues = new ContentValues();
+        movieInfoValues.put(MovieContract.MovieEntry._ID, Integer.valueOf(id));
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_POSTER_URL, mPoster);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_URL, mBackdrop);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_AVERAGE_RATE, mRating);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mReleaseDate);
+        movieInfoValues.put(MovieContract.MovieEntry.COLUMN_PLOT, mPlot);
+        Log.d(TAG, "onClick: " + MovieContract.MovieEntry.CONTENT_URI);
+        getActivity().getContentResolver()
+                .insert(MovieContract.MovieEntry.CONTENT_URI, movieInfoValues);
+        Log.d(TAG, "Content Provider added movie info to database");
+
+        //Trailer
+        ContentValues movieTrailerValues = new ContentValues();
+        Movie movie;
+        for (int i = 0; i < trailerList.size(); i++) {
+            movie = trailerList.get(i);
+            movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
+            movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_KEY, movie.getKey());
+            movieTrailerValues.put(MovieContract.TrailerEntry.COLUMN_SITE, movie.getSite());
+            getActivity().getContentResolver()
+                    .insert(MovieContract.TrailerEntry.CONTENT_URI, movieTrailerValues);
+        }
+        Log.d(TAG, "Content Provider added movie trailer to database");
+
+        //Review
+        ContentValues movieReviewValues = new ContentValues();
+        Review review;
+        for (int i = 0; i < reviewList.size(); i++) {
+            review = reviewList.get(i);
+            movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_MOVIE_ID, Integer.valueOf(id));
+            movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_AUTHOR, review.getAuthor());
+            movieReviewValues.put(MovieContract.ReviewEntry.COLUMN_CONTENT, review.getContent());
+            getActivity().getContentResolver()
+                    .insert(MovieContract.ReviewEntry.CONTENT_URI, movieReviewValues);
+        }
+        Log.d(TAG, "Content Provider added movie review to database");
+        FLAG_FAVORITE = 1;
     }
 
     @Override
