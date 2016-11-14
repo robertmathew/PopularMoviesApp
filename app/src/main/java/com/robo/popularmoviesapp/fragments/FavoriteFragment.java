@@ -35,6 +35,7 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
     String[] projections = {MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.COLUMN_TITLE,
             MovieContract.MovieEntry.COLUMN_POSTER_URL};
+    private MoviePosterAdapter favoriteAdapter;
 
     public FavoriteFragment() {
         // Required empty public constructor
@@ -61,7 +62,7 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.favorite_recycler_view);
         RecyclerView.LayoutManager favLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(favLayoutManager);
-        MoviePosterAdapter favoriteAdapter = new MoviePosterAdapter(mContext, favoriteList);
+        favoriteAdapter = new MoviePosterAdapter(mContext, favoriteList);
         recyclerView.setAdapter(favoriteAdapter);
         return view;
     }
@@ -85,22 +86,21 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() == 0) {
             Log.d(TAG, "No data in database");
-        }
-        if (data != null) {
-            Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
+        } else {
+            //Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
             while (data.moveToNext()) {
                 String id = String.valueOf(data.getInt(data.getColumnIndex(MovieContract.MovieEntry._ID)));
                 String title = data.getString(data.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
                 String poster = data.getString(data.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_URL));
-                Log.d(TAG, "ID: " + id);
-                Log.d(TAG, "Title: " + title);
-                Log.d(TAG, "Poster URL: " + poster);
+                //Log.d(TAG, "ID: " + id);
+                //Log.d(TAG, "Title: " + title);
+                //Log.d(TAG, "Poster URL: " + poster);
                 Movie m = new Movie(id, poster, title);
                 favoriteList.add(m);
             }
             data.close();
         }
-
+        favoriteAdapter.notifyDataSetChanged();
     }
 
     @Override
