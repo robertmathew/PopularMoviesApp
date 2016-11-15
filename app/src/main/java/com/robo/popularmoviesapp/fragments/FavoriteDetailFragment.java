@@ -403,7 +403,7 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
                     Log.d(TAG, "No data in database");
                 }
                 if (data != null) {
-                    Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
+                    //Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
                     if (data.moveToFirst()) {
                         mBackdrop = data.getString(data.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_URL));
                         mPoster = data.getString(data.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_URL));
@@ -419,7 +419,7 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
                     Log.d(TAG, "No data in database");
                 }
                 if (data != null) {
-                    Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
+                    //Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
                     if (data.moveToFirst()) {
                         do {
                             String key = data.getString(data.getColumnIndex(MovieContract.TrailerEntry.COLUMN_KEY));
@@ -440,7 +440,7 @@ public class FavoriteDetailFragment extends Fragment implements LoaderManager.Lo
                     Log.d(TAG, "No data in database");
                 }
                 if (data != null) {
-                    Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
+                    //Log.v(TAG, DatabaseUtils.dumpCursorToString(data));
                     if (data.moveToFirst()) {
                         do {
                             String author = data.getString(data.getColumnIndex(MovieContract.ReviewEntry.COLUMN_AUTHOR));

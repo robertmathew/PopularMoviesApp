@@ -69,6 +69,7 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onResume() {
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
         super.onResume();
     }
 
@@ -84,6 +85,7 @@ public class FavoriteFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+      favoriteList.clear();
         if (data.getCount() == 0) {
             Log.d(TAG, "No data in database");
         } else {
