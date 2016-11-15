@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearTrailer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:layout_marginTop="16dp"
+    android:orientation="vertical"
+    >
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="16dp"
+      android:paddingRight="16dp"
+      android:text="@string/trailer"
+      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+      />
+
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view_trailer"
+      android:layout_width="match_parent"
+      android:layout_height="144dp"
+      android:paddingTop="16dp"
+      />
+</LinearLayout>
