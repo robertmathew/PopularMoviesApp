@@ -19,13 +19,9 @@ public class FavoriteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite);
-        if (findViewById(R.id.movie_detail_container) != null) {
-            mTwoPane = true;
-        } else {
-            mTwoPane = false;
-        }
+        mTwoPane = findViewById(R.id.movie_detail_container) != null;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -45,9 +41,7 @@ public class FavoriteActivity extends AppCompatActivity {
             i.putExtra("id", id);
             i.putExtra("title", title);
             startActivity(i);
-        Log.d(TAG, "switchToDetail: switching");
+            Log.d(TAG, "switchToDetail: switching");
         }
     }
-
-
 }

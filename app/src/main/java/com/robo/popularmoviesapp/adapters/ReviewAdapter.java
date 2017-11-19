@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
 
-    ArrayList<Review> mDataset = new ArrayList<>();
+    private ArrayList<Review> mDataset = new ArrayList<>();
 
     public ReviewAdapter(ArrayList<Review> myDataset) {
         mDataset = myDataset;
@@ -30,8 +30,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                 .inflate(R.layout.review_item, parent, false);
         // set the view's size, margins, paddings and layout parameters
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -49,14 +48,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         return mDataset.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvAuthor;
-        public TextView tvContent;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvAuthor;
+        TextView tvContent;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
-            tvAuthor = (TextView) v.findViewById(R.id.review_author_name_view);
-            tvContent = (TextView) v.findViewById(R.id.review_content_view);
+            tvAuthor = v.findViewById(R.id.review_author_name_view);
+            tvContent = v.findViewById(R.id.review_content_view);
         }
     }
 }

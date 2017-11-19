@@ -44,8 +44,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         // create a new view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_poster, parent, false);
         // set the view's size, margins, paddings and layout parameters
-        ViewHolder viewHolder = new ViewHolder(v);
-        return viewHolder;
+        return new ViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -100,19 +99,19 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         return mDataset.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
-        public View mView;
-        public ImageView mImageView;
-        public TextView mTextView;
-        public MaterialProgressBar mProgressBar;
+        View mView;
+        ImageView mImageView;
+        TextView mTextView;
+        MaterialProgressBar mProgressBar;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             this.mView = view;
-            this.mImageView = (ImageView) view.findViewById(R.id.imageView);
-            this.mTextView = (TextView) view.findViewById(R.id.title);
-            this.mProgressBar = (MaterialProgressBar) view.findViewById(R.id.materialProgress);
+            this.mImageView = view.findViewById(R.id.imageView);
+            this.mTextView = view.findViewById(R.id.title);
+            this.mProgressBar = view.findViewById(R.id.materialProgress);
         }
     }
 }

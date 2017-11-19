@@ -35,8 +35,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.video_list_item, parent, false);
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
@@ -72,12 +71,12 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         return mDataset.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView mImageView;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
-            mImageView = (ImageView) v.findViewById(R.id.video_thumbnail_view);
+            mImageView = v.findViewById(R.id.video_thumbnail_view);
         }
     }
 }

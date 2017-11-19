@@ -6,16 +6,16 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable {
 
-    String _id;
-    String _img;
-    String _title;
-    String _plot;
-    String _releaseDate;
-    String _rating;
-    String _voteCount;
-    String _backdrop;
-    String _key;
-    String _site;
+    private String _id;
+    private String _img;
+    private String _title;
+    private String _plot;
+    private String _releaseDate;
+    private String _rating;
+    private String _voteCount;
+    private String _backdrop;
+    private String _key;
+    private String _site;
 
     public Movie() {
 

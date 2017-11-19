@@ -26,7 +26,7 @@ public class FetchMovieReviewTask extends AsyncTask<String, Void, ArrayList<Revi
 
     private static final String TAG = "FetchMovieReviewTask";
 
-    ArrayList<Review> reviewList = new ArrayList<>();
+    private ArrayList<Review> reviewList = new ArrayList<>();
 
     private ArrayList<Review> getMoviesVideoFromJson(String moviesJsonStr) throws JSONException {
 
@@ -83,7 +83,7 @@ public class FetchMovieReviewTask extends AsyncTask<String, Void, ArrayList<Revi
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 return null;
@@ -95,7 +95,7 @@ public class FetchMovieReviewTask extends AsyncTask<String, Void, ArrayList<Revi
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                 // But it does make debugging a *lot* easier if you print out the completed
                 // buffer for debugging.
-                buffer.append(line + "\n");
+                buffer.append(line).append("\n");
             }
 
             if (buffer.length() == 0) {

@@ -27,7 +27,7 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
     private static final String SORT_POPULAR = "popularity.desc";
     private static final String SORT_RATING = "vote_average.desc";
     private final String LOG_TAG = FetchMovieListTask.class.getSimpleName();
-    ArrayList<Movie> resultStrs = new ArrayList<>();
+    private ArrayList<Movie> resultStrs = new ArrayList<>();
 
     private ArrayList<Movie> getMoviesDataFromJson(String moviesJsonStr) throws JSONException {
 
@@ -96,16 +96,20 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
             }
             //Log.d(LOG_TAG, "doInBackground: " + builtUri.toString());
 
-            URL url = new URL(builtUri.toString());
+            URL url = null;
+            if (builtUri != null) {
+                url = new URL(builtUri.toString());
+            }
 
             // Create the request to OpenWeatherMap, and open the connection
+            assert url != null;
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
             // Read the input stream into a String
             InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 return null;
@@ -117,7 +121,7 @@ public class FetchMovieListTask extends AsyncTask<String, Void, ArrayList<Movie>
                 // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                 // But it does make debugging a *lot* easier if you print out the completed
                 // buffer for debugging.
-                buffer.append(line + "\n");
+                buffer.append(line).append("\n");
             }
 
             if (buffer.length() == 0) {

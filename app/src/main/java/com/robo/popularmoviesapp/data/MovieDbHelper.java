@@ -5,8 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.robo.popularmoviesapp.data.MovieContract.MovieEntry;
-import com.robo.popularmoviesapp.data.MovieContract.TrailerEntry;
 import com.robo.popularmoviesapp.data.MovieContract.ReviewEntry;
+import com.robo.popularmoviesapp.data.MovieContract.TrailerEntry;
 
 /**
  * Created by Robert Mathew on 17/12/15.
@@ -15,9 +15,9 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
 
-    static final String DATABASE_NAME = "moviehub.db";
+    private static final String DATABASE_NAME = "moviehub.db";
 
-    public MovieDbHelper(Context context) {
+    MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

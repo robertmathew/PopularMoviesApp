@@ -28,7 +28,7 @@ public class Utility {
 
         // For this app version I want only Locale.US name of month
         return (calendar.get(Calendar.DAY_OF_MONTH)
-                + " " + calendar.getDisplayName(calendar.MONTH, Calendar.LONG, Locale.US)
+                + " " + calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US)
                 + " " + calendar.get(Calendar.YEAR));
 
     }

@@ -10,9 +10,6 @@ import com.robo.popularmoviesapp.fragments.FavoriteDetailFragment;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private String id, title;
-    private Boolean twoPane;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,17 +17,16 @@ public class DetailActivity extends AppCompatActivity {
 
         //Getting id and title
         String classname = getIntent().getStringExtra("class");
-        id = getIntent().getStringExtra("id");
-        title = getIntent().getStringExtra("title");
-        twoPane = false;
+        String id = getIntent().getStringExtra("id");
+        String title = getIntent().getStringExtra("title");
 
-        if(classname.equals("MainActivity")) {
+        if (classname.equals("MainActivity")) {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, DetailFragment.newInstance(id, title, twoPane))
+                    .replace(R.id.fragment_container, DetailFragment.newInstance(id, title, false))
                     .commit();
         } else {
             getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, FavoriteDetailFragment.newInstance(id, title, twoPane))
+                    .replace(R.id.fragment_container, FavoriteDetailFragment.newInstance(id, title, false))
                     .commit();
         }
     }
